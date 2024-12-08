@@ -32,39 +32,39 @@ class InputTextFieldComponent extends StatelessWidget {
     return TextFormField(
       controller: controller,
       textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: keyboardType,
       obscureText: obscureText,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
       decoration: InputDecoration(
-          suffixIcon: suffixIcon,
-          prefixIcon: prefixIcon,
-          hintText: hintText,
-          fillColor: Colors.white,
-          filled: true,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-          errorStyle: const TextStyle(
-            fontSize: 13,
-            height: 1,
-            color: Colors.red,
-          ),
-          errorMaxLines: 1,
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-            borderRadius: const BorderRadius.all(Radius.circular(50)),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  width: 2, color: Theme.of(context).colorScheme.error)),
-          border: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.surface),
-              borderRadius: const BorderRadius.all(Radius.circular(50))),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  width: 2, color: Theme.of(context).colorScheme.secondary))),
+        suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        hintText: hintText,
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+        errorStyle: const TextStyle(
+          fontSize: 13,
+          height: 1,
+          color: Colors.red,
+        ),
+        errorMaxLines: 1,
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+          borderRadius: const BorderRadius.all(Radius.circular(50)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                width: 2, color: Theme.of(context).colorScheme.error)),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.transparent)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.secondary)),
+      ),
     );
   }
 }

@@ -13,9 +13,16 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
   bool obscurePassword = false;
   bool signInRequired = false;
   IconData iconPassword = Icons.visibility_off_outlined;
@@ -28,6 +35,8 @@ class _SignInScreenState extends State<SignInScreen> {
           if (state is SignInSuccess) {
             setState(() {
               signInRequired = false;
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Sucesso ao efetuar login!')));
             });
           } else if (state is SignInLoading) {
             setState(() {
@@ -36,6 +45,8 @@ class _SignInScreenState extends State<SignInScreen> {
           } else if (state is SignInFailure) {
             signInRequired = false;
             log("Error ao fazer login"); /* Adicionar PopUp de error */
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Error ao fazer login')));
           }
         },
         child: Form(
@@ -49,13 +60,18 @@ class _SignInScreenState extends State<SignInScreen> {
                     width: MediaQuery.of(context).size.width * 0.8,
                     height: 55,
                     child: InputTextFieldComponent(
-                      controller: passwordController,
+                      prefixIcon: const Icon(
+                        Icons.email,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                      controller: emailController,
                       hintText: "Email",
                       obscureText: false,
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter a text";
+                          return "Por favor informe um email valido!";
                         }
                         return null;
                       },
@@ -68,29 +84,36 @@ class _SignInScreenState extends State<SignInScreen> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   height: 55,
                   child: InputTextFieldComponent(
-                      controller: emailController,
+                      controller: passwordController,
                       hintText: "Senha",
                       obscureText: obscurePassword,
                       keyboardType: TextInputType.visiblePassword,
                       onFieldSubmitted: (String text) {},
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please Enter a text";
+                          return "Por favor preencha este campo!";
                         }
+
                         return null;
                       },
+                      prefixIcon: const Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
                       suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                              if (obscurePassword) {
-                                iconPassword = Icons.visibility_off_outlined;
-                              } else {
-                                iconPassword = Icons.visibility_outlined;
-                              }
-                            });
-                          },
-                          icon: Icon(iconPassword))),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                            if (obscurePassword) {
+                              iconPassword = Icons.visibility_off_outlined;
+                            } else {
+                              iconPassword = Icons.visibility_outlined;
+                            }
+                          });
+                        },
+                        icon: Icon(iconPassword),
+                      )),
                 ),
               ),
               const SizedBox(
@@ -119,100 +142,104 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 30,
               ),
               !signInRequired
-                  ? ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 300),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        height: 45,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            tryLogin();
-                          },
-                          style: TextButton.styleFrom(
-                              elevation: 3.0,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.surface,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5))),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 5),
-                            child: Text(
-                              "Entrar",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                  ? Column(
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 300),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 45,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<SignInBloc>().add(SignInRequired(
+                                      emailController.text,
+                                      passwordController.text));
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                  elevation: 3.0,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  foregroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5))),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 5),
+                                child: Text(
+                                  "Login",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        const SizedBox(
+                          height: 35,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text(
+                                "ou",
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.outline),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                  color: Theme.of(context).colorScheme.outline),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 300),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 45,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(
+                                Icons.g_mobiledata,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {},
+                              label: const Text(
+                                "Entrar com Google",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              style: TextButton.styleFrom(
+                                elevation: 3,
+                                overlayColor:
+                                    Theme.of(context).colorScheme.outline,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   : const CircularProgressIndicator(),
-              const SizedBox(
-                height: 35,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      "ou",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline),
-                    ),
-                  ),
-                  Expanded(
-                    child:
-                        Divider(color: Theme.of(context).colorScheme.outline),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 300),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    icon: const Icon(
-                      Icons.g_mobiledata,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {},
-                    label: const Text(
-                      "Entrar com Google",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    style: TextButton.styleFrom(
-                      elevation: 3,
-                      overlayColor: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void tryLogin() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Processing Data')));
-    }
   }
 }
