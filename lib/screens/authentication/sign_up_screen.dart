@@ -20,7 +20,7 @@ class _SignInScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final usernameController = TextEditingController();
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -60,7 +60,7 @@ class _SignInScreenState extends State<SignUpScreen> {
                     width: MediaQuery.of(context).size.width * 0.8,
                     height: 55,
                     child: InputTextFieldComponent(
-                      controller: usernameController,
+                      controller: nameController,
                       prefixIcon: const Icon(
                         Icons.person,
                         color: Colors.grey,
@@ -135,9 +135,9 @@ class _SignInScreenState extends State<SignUpScreen> {
                             setState(() {
                               obscurePassword = !obscurePassword;
                               if (obscurePassword) {
-                                iconPassword = Icons.visibility_off_outlined;
+                                iconPassword = Icons.remove_red_eye;
                               } else {
-                                iconPassword = Icons.visibility_outlined;
+                                iconPassword = Icons.visibility_off;
                               }
                             });
                           },
@@ -157,7 +157,19 @@ class _SignInScreenState extends State<SignUpScreen> {
                             height: 45,
                             child: ElevatedButton(
                               onPressed: () async {
-                                signUp();
+                                if (_formKey.currentState!.validate()) {
+                                  MyUser myUser = MyUser.empty;
+                                  myUser = myUser.copyWith(
+                                    email: emailController.text,
+                                    name: nameController.text,
+                                  );
+
+                                  setState(() {
+                                    context.read<SignUpBloc>().add(
+                                        SignUpRequired(
+                                            myUser, passwordController.text));
+                                  });
+                                }
                               },
                               style: TextButton.styleFrom(
                                   elevation: 3.0,
@@ -243,19 +255,5 @@ class _SignInScreenState extends State<SignUpScreen> {
         ),
       ),
     );
-  }
-
-  void signUp() async {
-    if (_formKey.currentState!.validate()) {
-      MyUser myUser = MyUser.empty;
-      myUser = myUser.copyWith(
-          email: emailController.text, name: usernameController.text);
-
-      setState(() {
-        context
-            .read<SignUpBloc>()
-            .add(SignUpRequired(myUser, passwordController.text));
-      });
-    }
   }
 }

@@ -2,18 +2,22 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:user_repository/src/entities/entities.dart';
 import 'package:user_repository/src/models/my_user.dart';
-import 'package:user_repository/src/user_repo.dart';
+import 'entities/entities.dart';
+import 'user_repo.dart';
 
 class FirebaseUserRepository implements UserRepository {
-  FirebaseUserRepository(
-      {FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  FirebaseUserRepository({
+    FirebaseAuth? firebaseAuth,
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   final FirebaseAuth _firebaseAuth;
-  final userCollection = FirebaseFirestore.instance.collection('users');
+  final usersCollection = FirebaseFirestore.instance.collection('users');
 
+  /// Stream of [MyUser] which will emit the current user when
+  /// the authentication state changes.
+  ///
+  /// Emits [MyUser.empty] if the user is not authenticated.
   @override
   Stream<User?> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
@@ -27,13 +31,14 @@ class FirebaseUserRepository implements UserRepository {
     try {
       UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
           email: myUser.email, password: password);
+
       myUser = myUser.copyWith(id: user.user!.uid);
+
+      return myUser;
     } catch (e) {
       log(e.toString());
       rethrow;
     }
-
-    return myUser;
   }
 
   @override
@@ -68,10 +73,9 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   @override
-  Future<MyUser> getMyUser(String myUserId) async {
+  Future<void> setUserData(MyUser user) async {
     try {
-      return userCollection.doc(myUserId).get().then((value) =>
-          MyUser.fromEntity(MyUserEntity.fromDocument(value.data()!)));
+      await usersCollection.doc(user.id).set(user.toEntity().toDocument());
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -79,9 +83,10 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   @override
-  Future<void> setUserData(MyUser user) async {
+  Future<MyUser> getMyUser(String myUserId) async {
     try {
-      await userCollection.doc(user.id).set(user.toEntity().toDocument());
+      return usersCollection.doc(myUserId).get().then((value) =>
+          MyUser.fromEntity(MyUserEntity.fromDocument(value.data()!)));
     } catch (e) {
       log(e.toString());
       rethrow;

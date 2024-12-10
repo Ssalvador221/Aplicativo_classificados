@@ -1,59 +1,21 @@
 {
   "project_info": {
-    "project_number": "61191625807",
-    "project_id": "flutter-app-2c059",
-    "storage_bucket": "flutter-app-2c059.firebasestorage.app"
+    "project_number": "1000094219507",
+    "project_id": "fyndsy",
+    "storage_bucket": "fyndsy.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:61191625807:android:be5e01fd748ec286bbde3a",
+        "mobilesdk_app_id": "1:1000094219507:android:a02ffe7a2375569743cb86",
         "android_client_info": {
-          "package_name": "com.firebaseapp.app"
+          "package_name": "com.fyndsy.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCQOJ9-687yOE5l6H0AYz80fhbkDxhNERg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:61191625807:android:0151c4be93cbadb3bbde3a",
-        "android_client_info": {
-          "package_name": "com.firebaseapp.com"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCQOJ9-687yOE5l6H0AYz80fhbkDxhNERg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:61191625807:android:afc126125d864e53bbde3a",
-        "android_client_info": {
-          "package_name": "com.flutterapp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCQOJ9-687yOE5l6H0AYz80fhbkDxhNERg"
+          "current_key": "AIzaSyDTmhr4vcRWZRQVcMrDnAPdWDbjmPe2BeA"
         }
       ],
       "services": {

@@ -33,6 +33,23 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  
+  <script type="module">
+  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDTnxkp_IULINBXux2TJvE86mye0TZ5VYg",
+    authDomain: "flutter-app-2c059.firebaseapp.com",
+    projectId: "flutter-app-2c059",
+    storageBucket: "flutter-app-2c059.firebasestorage.app",
+    messagingSenderId: "61191625807",
+    appId: "1:61191625807:web:d6525af6acbc3e76bbde3a",
+    measurementId: "G-F18PTF788K"
+  };
+
+  const app = initializeApp(firebaseConfig);
+</script>
+<script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
